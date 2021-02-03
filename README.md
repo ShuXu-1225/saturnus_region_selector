@@ -1,2 +1,1 @@
-# saturnus_region_selector
-A region selector based on element UI
+# saturnus_region_selector_main
