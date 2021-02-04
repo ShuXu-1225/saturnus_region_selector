@@ -1,10 +1,10 @@
 {
   "name": "saturnus_region_selector",
   "description": "A region selector based on element UI",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "author": "ShuXu<jinghongzhixian@126.com>",
   "license": "MIT",
-  "private": true,
+  "private": false,
   "keywords": [
     "Vue",
     "region",
@@ -15,6 +15,7 @@
     "last 2 versions",
     "not ie <= 8"
   ],
+  "main": "dist/v-origin-selector.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack serve",
     "build": "cross-env NODE_ENV=production webpack --progress"

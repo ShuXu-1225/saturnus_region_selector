@@ -2,9 +2,10 @@ const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
+console.info(process.env.NODE_ENV)
 module.exports = {
   // entry: './src/main.js',
-  entry: process.env.NODE_EVN === 'production' ? './src/main_plugin.js' : {
+  entry: process.env.NODE_ENV === 'production' ? './src/main_plugin.js' : {
     index: ['./src/main.js']
   },
   output: {
