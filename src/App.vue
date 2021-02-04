@@ -1,8 +1,7 @@
 <template>
   <div id="app">
     <el-row class="example" v-show="false">
-      <img src="./assets/logo.png">
-
+      <!-- <img src="./assets/logo.png"> -->
       <el-button>{{ msg }}</el-button>
 
       <el-select v-model="value" placeholder="请选择">

@@ -17,3 +17,7 @@ if (typeof window !== undefined && window.Vue) {
   window.Vue.component('v-region-selector', RegionSelector)
   install(window.Vue)
 }
+
+export default {
+  install
+}

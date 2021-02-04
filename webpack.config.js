@@ -4,13 +4,17 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 module.exports = {
   // entry: './src/main.js',
-  entry: {
+  entry: process.env.NODE_EVN === 'production' ? './src/main_plugin.js' : {
     index: ['./src/main.js']
   },
   output: {
     publicPath: process.env.NODE_ENV !== 'production' ? '/' : './', // 输出解析文件的目录，指定资源文件引用的目录 ，打包后浏览器访问服务时的 url 路径中通用的一部分。
     path: path.resolve(__dirname, './dist'), // 所有输出文件的目标路径;打包后文件在硬盘中的存储位置
-    filename: '[name]-[hash].bundle.js'
+    // filename: '[name]-[hash].bundle.js'
+    filename: 'v-origin-selector.js',
+    library: 'v-origin-selector', // 使用 require 时的模块名
+    libraryTarget: 'umd', // 指定输出格式
+    umdNamedDefine: true // 会对 UMD 的构建过程中的 AMD 模块进行命名，否则就使用匿名 define
   },
   module: {
     rules: [
@@ -114,13 +118,6 @@ module.exports = {
     ]
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      template: "./public/index.html",
-      title: "html-webpack-plugin title",
-      chunks: ["index"],
-      inject: true // Inject all scripts into the body
-    }),
-
     // ***** 请确保引入这个插件 *****
     new VueLoaderPlugin()
   ],
@@ -156,10 +153,16 @@ if (process.env.NODE_ENV === 'production') {
   module.exports.devtool = 'source-map'
   // http://vue-loader.vuejs.org/en/workflow/production.html
   module.exports.plugins = (module.exports.plugins || []).concat([
-    // new webpack.DefinePlugin({
-    //   'process.env': {
-    //     NODE_ENV: '"production"'
-    //   }
-    // })
+
+  ])
+} else {
+  module.exports.plugins = (module.exports.plugins || []).concat([
+    new HtmlWebpackPlugin({
+      template: "./public/index.html",
+      title: "html-webpack-plugin title",
+      chunks: ["index"],
+      inject: true // Inject all scripts into the body
+    })
   ])
 }
+
