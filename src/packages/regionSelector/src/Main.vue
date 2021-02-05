@@ -10,11 +10,10 @@
           <el-select v-model="value_selector[i - 1]" placeholder="请选择" @change="changeHandler(i - 1)">
             <el-option
               v-for="item in options[i - 1]"
-              :key="item[optionKeyList[i - 1].id]"
-              :label="item[optionKeyList[i - 1].name]"
-              :value="item[optionKeyList[i - 1].id]"
-            >
-            </el-option>
+              :key="item['id']"
+              :label="item['name']"
+              :value="item['id']"
+            />
           </el-select>
         </div>
       </template>
@@ -29,6 +28,15 @@
  * @date 2021/02/04
  */
 
+// 按需注册 第三方组件 这种引入方法 可以确保打包后 第三方标签仍可用 start
+import {
+  Row,
+  Col,
+  Select,
+  Option
+} from 'element-ui'
+// end
+
 import {
   // mapState,
   mapGetters,
@@ -37,10 +45,16 @@ import {
 
 export default {
   name: 'RegionSelector',
+  components: {
+    ElRow: Row,
+    ElCol: Col,
+    ElSelect: Select,
+    ElOption: Option
+  },
   props: {
     layoutDir: {
-      type: String,
       // 布局方向
+      type: String,
       default: () => 'horizontal' // vertical
     },
     labelWidth: {
@@ -58,21 +72,6 @@ export default {
         '', // province
         '', // city
         '' // district
-      ],
-
-      optionKeyList: [
-        {
-          id: 'provinceId',
-          name: 'provinceName'
-        },
-        {
-          id: 'cityId',
-          name: 'cityName'
-        },
-        {
-          id: 'areaId',
-          name: 'areaName'
-        }
       ]
     }
   },
@@ -99,9 +98,6 @@ export default {
 
     options: function() {
       return [
-        // this.province,
-        // this.city,
-        // this.district
         this['province'],
         this['city'],
         this['district']
@@ -136,12 +132,19 @@ export default {
       this.$emit('change', index)
     },
 
-    // 取值
+    /**
+     * 取值
+     * @returns {string[]}
+     */
     getValue: function() {
       return this.value_selector
     },
 
-    // 赋值
+    /**
+     * 赋值 todo
+     * @param regionData
+     * @returns {Promise<void>}
+     */
     setValue: async function(regionData) {
       // for (let i = 3; i--;) { // 2 1 0
       //   const k = 2 - i // 0 1 2

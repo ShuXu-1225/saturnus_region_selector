@@ -10,6 +10,14 @@
         "libraryName": "element-ui",
         "styleLibraryName": "theme-chalk"
       }
+    ],
+    [
+      "import",
+      {
+        "libraryName": "element-ui",
+        "libraryDirectory": "lib",
+        "style": "theme-chalk"
+      }
     ]
   ]
 }

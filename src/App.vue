@@ -1,63 +1,28 @@
 <template>
   <div id="app">
-    <el-row class="example" v-show="false">
-      <!-- <img src="./assets/logo.png"> -->
-      <el-button>{{ msg }}</el-button>
+    <img src="./assets/logo.png">
 
-      <el-select v-model="value" placeholder="请选择">
-        <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
-        </el-option>
-      </el-select>
-    </el-row>
-
-    <el-row class="example" v-show="true">
+    <div class="example" v-show="true" style="margin-top: 40px;">
       <region-selector ref="regionSelector" @change="changeHandler"/>
-    </el-row>
+    </div>
   </div>
 </template>
 
 <script>
-import RegionSelector from '@/packages/regionSelector/src/Main'
+import Vue from 'vue'
+import store from '@/store'
+
+// import RegionSelector from '@/main_plugin'
+import RegionSelector from '../Lib/v_region_selector'
+Vue.use(RegionSelector, { store })
+
 import request from '@/network'
 import { mapMutations } from 'vuex'
 
 export default {
   name: 'app',
-  components: {
-    RegionSelector
-  },
   data() {
-    return {
-      msg:  'Welcome to Your Vue.js App',
-
-      options: [
-        {
-          value: '选项1',
-          label: '黄金糕'
-        },
-        {
-          value: '选项2',
-          label: '双皮奶'
-        },
-        {
-          value: '选项3',
-          label: '蚵仔煎'
-        },
-        {
-          value: '选项4',
-          label: '龙须面'
-        },
-        {
-          value: '选项5',
-          label: '北京烤鸭'
-        }
-      ],
-      value: ''
-    }
+    return {}
   },
   mounted() {
     this.getRegionSelectorData(0)
@@ -105,7 +70,7 @@ export default {
               name: item[keyMapList[nextLevel][1]]
             })
           })
-          this[mutationList[nextLevel]](res.resultJson)
+          this[mutationList[nextLevel]](ls)
         }
       })
     }
@@ -117,12 +82,8 @@ export default {
 @import "src/assets/style.scss";
 
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  background: cornsilk;
   padding: 20px;
+  text-align: center;
+  background: cornsilk;
 }
 </style>
