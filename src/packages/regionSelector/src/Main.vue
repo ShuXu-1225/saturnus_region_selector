@@ -40,7 +40,8 @@ import {
 import {
   // mapState,
   mapGetters,
-  mapActions
+  mapMutations,
+  // mapActions
 } from 'vuex'
 
 export default {
@@ -64,7 +65,24 @@ export default {
     labelAlign: {
       type: String,
       default: () => 'right'
-    }
+    },
+    requestList: {
+      type: Array,
+      required: true,
+      default: () => []
+    },
+    responseKey: {
+      type: String,
+      default: () => ''
+    },
+    keyMapList: {
+      type: Array,
+      default: () => [
+        ['id', 'name'],
+        ['id', 'name'],
+        ['id', 'name']
+      ]
+    },
   },
   data() {
     return {
@@ -114,11 +132,13 @@ export default {
   },
   mounted() {},
   methods: {
-    ...mapActions(
+    ...mapMutations(
       'regionSelector',
-      [
-        'getRegionData'
-      ]
+      {
+        'setProvince': 'SET_PROVINCE',
+        'setCity': 'SET_CITY',
+        'setDistrict': 'SET_DISTRICT'
+      }
     ),
 
     /**
@@ -127,9 +147,14 @@ export default {
      */
     changeHandler: function(index) {
       for (let i = 3; i--;) { // 2 1 0
-        if (i > index) this.value_selector[i] = '' // 情况当前选择级别的所有下级选中数据
+        if (i > index) this.value_selector[i] = '' // 清空 当前选择级别的所有下级选中数据
       }
-      this.$emit('change', index)
+      if (index !== 2) this.initNext(index + 1) // 获取下级 地址 list
+      // this.$emit('change', index)
+    },
+
+    init: function () {
+      this.initNext(0)
     },
 
     /**
@@ -141,18 +166,70 @@ export default {
     },
 
     /**
-     * 赋值 todo
+     * 初始化 下级地址 list 如果存在赋值操作 则 在其初始化成功后 操作
      * @param regionData
      * @returns {Promise<void>}
      */
     setValue: async function(regionData) {
-      // for (let i = 3; i--;) { // 2 1 0
-      //   const k = 2 - i // 0 1 2
-      //   // 当赋值上级后 获取该上级对应的下级 仅当其下级获取成功时 才继续执行赋值
-      //   if (k !== 0) await this.getRegionData({ parentCode: regionData[k - 1], type: k })
-      //   this.value_selector[k] = regionData[k]
-      // }
-      this.$forceUpdate()
+      for ( let i in [0, 1, 2] ) { // 0 1 2
+        i = parseInt(i)
+        // 当赋值上级后 获取该上级对应的下级 仅当其下级获取成功时 才继续执行赋值
+        if (i !== 0) {
+          await this.doGetRegionData(i)
+        }
+        this.value_selector[i] = regionData[i]
+        this.$forceUpdate()
+      }
+    },
+
+    /**
+     * 初始化 下级地址 list
+     * @param level 0=省 1=市 2=区 'init'=初始化
+     * @returns {Promise<void>}
+     */
+    initNext: async function(level) {
+      await this.doGetRegionData(level)
+    },
+
+    /**
+     * 通过接口 获取 地区列表
+     * @param level
+     * @returns {Promise<unknown>}
+     */
+    doGetRegionData: function (level) {
+      const that = this
+      return new Promise(resolve => {
+        that.requestList[level]().then(res => {
+          if (res) {
+            const response = that.responseKey ? res[that.responseKey] : res
+            const ls = []
+            response.map(item => {
+              ls.push({
+                id: item[that.keyMapList[level][0]],
+                name: item[that.keyMapList[level][1]]
+              })
+            })
+
+            that.doSetRegionData(ls, level)
+          }
+
+          resolve(true)
+        })
+      })
+    },
+
+    /**
+     * 将 地区列表 存放至 store
+     * @param value
+     * @param level
+     */
+    doSetRegionData: function (value, level) {
+      const mutationList = [
+        'setProvince',
+        'setCity',
+        'setDistrict'
+      ]
+      this[mutationList[level]](value)
     }
   }
 }
