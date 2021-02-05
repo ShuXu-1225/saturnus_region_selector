@@ -112,7 +112,7 @@ export default {
 | -------- | ------------------------------------------------------ | ------------------------------------------------------------ |
 | init     | init the region selector                               | this.$refs['regionSelector'].init()                          |
 | getValue | return value like<br />['150000', '150200', '150203' ] | this.$refs['regionSelector'].getValue()                      |
-| setValue |                                                        | this.$refs['regionSelector1'].setValue(<br />[ '150000', '150200', '150203' ]<br />) |
+| setValue |                                                        | this.$refs['regionSelector'].setValue(<br />[ '150000', '150200', '150203' ]<br />) |
 
 ### Events
 
