@@ -1,18 +1,21 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
+   <img src="./assets/logo.png">
 
     <div style="margin-top: 40px;">
       <region-selector
         ref="regionSelector"
+        v-model="regionList"
         :requestList="requestList"
         responseKey="resultJson"
-        :keyMapList="keyMapList" />
+        :keyMapList="keyMapList"
+      />
     </div>
 
-    <div style="margin-top: 40px;">
+    <div style="margin-top: 20px;">
       <button @click="getVal">get value</button>
       <button @click="setVal">set value</button>
+      <button @click="reset">reset</button>
     </div>
   </div>
 </template>
@@ -21,8 +24,8 @@
 import Vue from 'vue'
 import store from '@/store'
 
-import RegionSelector from '@/main_plugin'
-// import RegionSelector from '../Lib/v_region_selector'
+// import RegionSelector from '@/main_plugin'
+import RegionSelector from '../Lib/v_region_selector'
 Vue.use(RegionSelector, { store })
 
 import request from '@/network'
@@ -31,6 +34,10 @@ export default {
   name: 'app',
   data() {
     return {
+      regionList: [
+        // "110000", "110100", "110101"
+      ],
+
       keyMapList : [
         ['provinceId', 'provinceName'],
         ['cityId', 'cityName'],
@@ -51,7 +58,7 @@ export default {
       const req_city = function() {
         return new Promise(resolve => {
           request.post('commonApi/common/getCity', {
-            provinceId: that.$refs['regionSelector'].getValue()[0]
+            provinceId: that.regionList[0]
           }).then(res => {
             resolve(res)
           })
@@ -60,7 +67,7 @@ export default {
       const req_district = function() {
         return new Promise(resolve => {
           request.post('commonApi/common/getArea', {
-            cityId: that.$refs['regionSelector'].getValue()[1]
+            cityId: that.regionList[1]
           }).then(res => {
             resolve(res)
           })
@@ -73,18 +80,18 @@ export default {
       ]
     }
   },
-  mounted() {
-    this.initRegionSelector()
-  },
   methods: {
-    initRegionSelector: function () {
-      this.$refs['regionSelector'].init()
-    },
     getVal: function () {
-      console.info(this.$refs['regionSelector'].getValue())
+      // console.info(this.$refs['regionSelector'].getValue())
+      console.info(this.regionList)
     },
     setVal: function () {
-      this.$refs['regionSelector'].setValue([ '150000', '150200', '150203' ])
+      // this.$refs['regionSelector'].setValue([ '150000', '150200', '150203' ])
+      this.regionList = [ '150000', '150200', '150203' ]
+    },
+    reset: function () {
+      // this.$refs['regionSelector'].setValue([ '', '', '' ])
+      this.regionList = []
     }
   }
 }

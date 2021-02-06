@@ -25,6 +25,7 @@ Vue.use(RegionSelector, { store })
 ```bash
 <region-selector
   ref="regionSelector"
+  v-model="regionList"
   :requestList="requestList"
   responseKey="resultJson"
   :keyMapList="keyMapList"
@@ -35,6 +36,9 @@ import { mapMutations } from 'vuex'
 export default {
   data() {
     return {
+      regionList: [
+        // "110000", "110100", "110101" // default value
+      ],
       keyMapList : [
         ['provinceId', 'provinceName'],
         ['cityId', 'cityName'],
@@ -42,7 +46,7 @@ export default {
       ]
     }
   },
-	computed: {
+  computed: {
     requestList: function (){
       const that = this
       const req_province = function() {
@@ -55,7 +59,7 @@ export default {
       const req_city = function() {
         return new Promise(resolve => {
           request.post('commonApi/common/getCity', {
-            provinceId: that.$refs['regionSelector'].getValue()[0] // 请求的入参
+            provinceId: that.regionList[0] // 请求的入参
           }).then(res => {
             resolve(res)
           })
@@ -64,7 +68,7 @@ export default {
       const req_district = function() {
         return new Promise(resolve => {
           request.post('commonApi/common/getArea', {
-            cityId: that.$refs['regionSelector'].getValue()[1] // 请求的入参
+            cityId: that.regionList[1] // 请求的入参
           }).then(res => {
             resolve(res)
           })
@@ -77,18 +81,18 @@ export default {
       ]
     }
   },
-  mounted() {
-    this.initRegionSelector()
-  },
   methods: {
-    initRegionSelector: function () {
-      this.$refs['regionSelector'].init()
-    },
     getVal: function () {
-      console.info(this.$refs['regionSelector'].getValue())
+      // console.info(this.$refs['regionSelector'].getValue()) // bad
+      console.info(this.regionList) // good
     },
     setVal: function () {
-      this.$refs['regionSelector'].setValue([ '150000', '150200', '150203' ])
+      // this.$refs['regionSelector'].setValue([ '150000', '150200', '150203' ]) // bad
+      this.regionList = [ '150000', '150200', '150203' ] // good
+    },
+    reset: function () {
+      // this.$refs['regionSelector'].setValue([ '', '', '' ]) // bad
+      this.regionList = [] // good
     }
   }
 }
@@ -99,6 +103,7 @@ export default {
 
 | Name        | Type   | Default                        | Options              | Description                                                  |
 | ----------- | ------ | ------------------------------ | -------------------- | ------------------------------------------------------------ |
+| v-model     | Array  | []                             |                      | value                                                        |
 | layoutDir   | String | horizontal                     | horizontal, vertical |                                                              |
 | labelWidth  | String | 50px                           |                      |                                                              |
 | labelAlign  | String | right                          | left, center, right  |                                                              |
@@ -110,7 +115,6 @@ export default {
 
 | Name     | Description                                            | e.g.                                                         |
 | -------- | ------------------------------------------------------ | ------------------------------------------------------------ |
-| init     | init the region selector                               | this.$refs['regionSelector'].init()                          |
 | getValue | return value like<br />['150000', '150200', '150203' ] | this.$refs['regionSelector'].getValue()                      |
 | setValue |                                                        | this.$refs['regionSelector'].setValue(<br />[ '150000', '150200', '150203' ]<br />) |
 

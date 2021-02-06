@@ -9,7 +9,7 @@ axiosInstance.interceptors.request.use(
   config => {
     // do something before request is sent
 
-    config.headers['Authorization'] = 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxODY0MDMwMjA5NSIsImV4cCI6MTYxMjUyNTY4MCwiaWF0IjoxNjEyNDg5NjgwfQ.n4z-Catgr5zfw9yB9343400TnKu6h0Z0mhmUttC09lrHktsoMiyJWWWR3n95PMM3IZQoj_daJSogUxElRAtxAA'
+    config.headers['Authorization'] = 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxODY0MDMwMjA5NSIsImV4cCI6MTYxMjYwOTk0NiwiaWF0IjoxNjEyNTczOTQ2fQ.ylvabra_l3NxukRdPDZwGWAIIFjmA_8xx_1nJnFe_n9siTW4qPAu4PeD9eYR8t-pMJDkZFREOgdh54qerQi_Iw'
     config.headers['Content-Type'] = 'application/json'
     return config
   },

@@ -7,7 +7,13 @@
             {{ i === 1 ? "省": i === 2 ? "市" : "区" }}
           </div>
 
-          <el-select v-model="value_selector[i - 1]" placeholder="请选择" @change="changeHandler(i - 1)">
+          <el-select
+            v-model="value_selector[i - 1]"
+            :loading="loading[i - 1]"
+            :class="{'is-loading': loading[i - 1]}"
+            placeholder="请选择"
+            @change="changeHandler(i - 1)"
+          >
             <el-option
               v-for="item in options[i - 1]"
               :key="item['id']"
@@ -52,7 +58,24 @@ export default {
     ElSelect: Select,
     ElOption: Option
   },
+  // *** v-model ***
+  model: {
+    prop: 'value_selector',
+    event: 'change'
+  },
   props: {
+    // *** v-model start ***
+    value_selector: {
+      type: Array,
+      default: () => {
+        return [
+          '', // province
+          '', // city
+          '' // district
+        ]
+      }
+    },
+    // *** v-model end ***
     layoutDir: {
       // 布局方向
       type: String,
@@ -86,10 +109,17 @@ export default {
   },
   data() {
     return {
-      value_selector: [
-        '', // province
-        '', // city
-        '' // district
+      // 使用 v-model 实现 此变量移至 props
+      // value_selector: [
+      //   '', // province
+      //   '', // city
+      //   '' // district
+      // ],
+
+      loading: [
+        false, // province
+        false, // city
+        false // district
       ]
     }
   },
@@ -130,6 +160,18 @@ export default {
       }
     }
   },
+  watch: {
+    value_selector: {
+      handler: function(val, oldVal) {
+        // 初次加载时 oldVal 为空
+        if (JSON.stringify(val) !== JSON.stringify(oldVal)) {
+          this.loading = [true, true, true]
+          this.setValue(val)
+        }
+      },
+      immediate: true
+    }
+  },
   mounted() {},
   methods: {
     ...mapMutations(
@@ -153,10 +195,6 @@ export default {
       // this.$emit('change', index)
     },
 
-    init: function () {
-      this.initNext(0)
-    },
-
     /**
      * 取值
      * @returns {string[]}
@@ -173,10 +211,13 @@ export default {
     setValue: async function(regionData) {
       for ( let i in [0, 1, 2] ) { // 0 1 2
         i = parseInt(i)
-        // 当赋值上级后 获取该上级对应的下级 仅当其下级获取成功时 才继续执行赋值
-        if (i !== 0) {
-          await this.doGetRegionData(i)
+        if ( i === 0 && this['province'] && this['province'].length) {
+          // 一级地址 存在即可 不需要实时获取
+          this.loading[0] = false
+          this.value_selector[i] = regionData[i]
+          continue // 省 仅加载一次便可
         }
+        await this.doGetRegionData(i)
         this.value_selector[i] = regionData[i]
         this.$forceUpdate()
       }
@@ -198,21 +239,25 @@ export default {
      */
     doGetRegionData: function (level) {
       const that = this
+      that.loading[level] = true
       return new Promise(resolve => {
         that.requestList[level]().then(res => {
           if (res) {
             const response = that.responseKey ? res[that.responseKey] : res
             const ls = []
-            response.map(item => {
-              ls.push({
-                id: item[that.keyMapList[level][0]],
-                name: item[that.keyMapList[level][1]]
+            if (response && response.length) {
+              response.map(item => {
+                ls.push({
+                  id: item[that.keyMapList[level][0]],
+                  name: item[that.keyMapList[level][1]]
+                })
               })
-            })
+            }
 
             that.doSetRegionData(ls, level)
           }
 
+          that.loading[level] = false
           resolve(true)
         })
       })
@@ -250,6 +295,32 @@ export default {
         font-size: 14px;
         color: #606266;
         line-height: 40px;
+      }
+
+      ::v-deep .el-select {
+        &.is-loading {
+          .el-input {
+            &:before {
+              content: '加载中';
+              width: 100%;
+              height: 100%;
+              position: absolute;
+              color: #DCDFE6;
+              background: #fff;
+              border-radius: 4px;
+              border: 1px solid #DCDFE6;
+              display: flex;
+              align-items: center;
+              padding: 0 15px;
+              box-sizing: border-box;
+            }
+          }
+        }
+        .el-input {
+          &:before {
+            content: '';
+          }
+        }
       }
     }
   }
