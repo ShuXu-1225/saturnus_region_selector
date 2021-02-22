@@ -2,8 +2,9 @@
   <el-row class="container">
     <div class="selector-container" :style="{ flexDirection: layoutDir === 'horizontal' ? 'row' : 'column' }">
       <template v-for="i in 3">
-        <div :key="i" class="item">
-          <div class="label" :style="labelStyle">
+        <!-- computed 传参方法 -->
+        <div :key="i" class="item" :style="itemStyle(i)">
+          <div v-if="labelShow" class="label" :style="labelStyle">
             {{ i === 1 ? "省": i === 2 ? "市" : "区" }}
           </div>
 
@@ -11,6 +12,7 @@
             v-model="value_selector[i - 1]"
             :loading="loading[i - 1]"
             :class="{'is-loading': loading[i - 1]}"
+            :style="selectStyle"
             placeholder="请选择"
             @change="changeHandler(i - 1)"
           >
@@ -80,6 +82,11 @@ export default {
       // 布局方向
       type: String,
       default: () => 'horizontal' // vertical
+      // default: () => 'vertical' // horizontal
+    },
+    labelShow: {
+      type: Boolean,
+      default: () => true
     },
     labelWidth: {
       type: String,
@@ -152,11 +159,36 @@ export default {
       ]
     },
 
+    itemStyle: function () {
+      // computed 传参方法
+      return function(i) {
+        let style = {
+          flex: 1,
+          marginBottom: i !== 3 ? '10px' : '',
+          display: 'flex'
+        }
+        if(this.layoutDir === 'horizontal') {
+          style = {
+            width: 'calc(33.33% - 5px)',
+            display: 'flex'
+          }
+        }
+        return style
+      }
+    },
+
     labelStyle: function() {
       return {
         width: this.labelWidth,
         textAlign: this.labelAlign,
-        padding: '0 12px'
+        padding: '0 12px',
+        boxSizing: 'border-box'
+      }
+    },
+
+    selectStyle: function () {
+      return {
+        width: !this.labelShow ? '100%' : `calc(100% - ${this.labelWidth})`
       }
     }
   },
@@ -225,7 +257,7 @@ export default {
 
     /**
      * 初始化 下级地址 list
-     * @param level 0=省 1=市 2=区 'init'=初始化
+     * @param level 0=省 1=市 2=区
      * @returns {Promise<void>}
      */
     initNext: async function(level) {
@@ -285,11 +317,9 @@ export default {
   .selector-container {
     width: 100%;
     display: flex;
+    justify-content: space-between;
 
     .item {
-      margin-bottom: 22px;
-      flex: 1;
-
       .label {
         display: inline-block;
         font-size: 14px;
@@ -298,6 +328,8 @@ export default {
       }
 
       ::v-deep .el-select {
+        width: 100%;
+
         &.is-loading {
           .el-input {
             &:before {

@@ -42,7 +42,7 @@ const actions = {
     return new Promise(resolve => {
       commit(
         mutationList[type],
-        [{id: '', name: ''}] // real region data
+        [] // real region data such as [{id: '', name: ''}]
       )
       resolve(true)
     })

@@ -1,16 +1,15 @@
 <template>
   <div id="app">
-   <img src="./assets/logo.png">
+    <!--<img src="./assets/logo.png">-->
 
-    <div style="margin-top: 40px;">
-      <region-selector
-        ref="regionSelector"
-        v-model="regionList"
-        :requestList="requestList"
-        responseKey="resultJson"
-        :keyMapList="keyMapList"
-      />
-    </div>
+    <region-selector
+      ref="regionSelector"
+      v-model="regionList"
+      :labelShow="false"
+      :requestList="requestList"
+      responseKey="resultJson"
+      :keyMapList="keyMapList"
+    />
 
     <div style="margin-top: 20px;">
       <button @click="getVal">get value</button>
@@ -38,7 +37,7 @@ export default {
         // "110000", "110100", "110101"
       ],
 
-      keyMapList : [
+      keyMapList: [
         ['provinceId', 'provinceName'],
         ['cityId', 'cityName'],
         ['areaId', 'areaName']

@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const axiosInstance = axios.create({
-  baseURL: 'http://sfe.eyedocloud.net/'
+  baseURL: 'http://sfe.eyedocloud.net/' // test only
 })
 
 // request interceptor
@@ -9,7 +9,7 @@ axiosInstance.interceptors.request.use(
   config => {
     // do something before request is sent
 
-    config.headers['Authorization'] = 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxODY0MDMwMjA5NSIsImV4cCI6MTYxMjYwOTk0NiwiaWF0IjoxNjEyNTczOTQ2fQ.ylvabra_l3NxukRdPDZwGWAIIFjmA_8xx_1nJnFe_n9siTW4qPAu4PeD9eYR8t-pMJDkZFREOgdh54qerQi_Iw'
+    config.headers['Authorization'] = 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxODY0MDMwMjA5NSIsImV4cCI6MTYxMzk5NjQ1NywiaWF0IjoxNjEzOTYwNDU3fQ.t2AlFzeq68gt4ZnnptrIJF4t3nw8RZphoEl3JVO4QudgPH57ZlQyI_tWcDpz_QBChR8FmQAdcQVFNIXohP34XA'
     config.headers['Content-Type'] = 'application/json'
     return config
   },

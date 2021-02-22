@@ -10,7 +10,7 @@ const selector = {
   // 获取一级省市区地址 并缓存 by ShuXu
   init: function() {
     if (!store.getters.region_province || !store.getters.region_province.length) {
-      store.dispatch('region/getRegionData', {})
+      store.dispatch('region/getRegionData', { type: 0 })
     }
   }
 }

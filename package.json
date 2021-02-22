@@ -1,7 +1,7 @@
 {
   "name": "v_region_selector",
   "description": "A region selector based on Vue2, Vuex and element UI",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "author": "ShuXu<jinghongzhixian@126.com>",
   "license": "MIT",
   "private": false,
